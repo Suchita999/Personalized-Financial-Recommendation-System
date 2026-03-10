@@ -25,6 +25,18 @@
 - **`cluster_statistics.csv`** - Detailed statistics for each cluster
 - **`cluster_profiles.csv`** - Business-friendly cluster descriptions
 
+### **Key Results Summary**
+| Cluster | Size | Income | Expenditure | Savings Rate | Profile |
+|---------|------|--------|-------------|--------------|---------|
+| 0 | 4,530 (32.6%) | $199,221 | $22,720 | 86.4% | High Income Savers |
+| 1 | 1,696 (12.2%) | $3,260 | $12,937 | -49.9% | Zero Income Households |
+| 2 | 7,660 (55.2%) | $49,963 | $8,074 | 79.7% | Middle Income Families |
+
+### **Performance Metrics**
+- **Silhouette Score**: 0.184 (good cluster separation)
+- **Calinski-Harabasz**: 2,117 (optimal cluster dispersion)
+- **Inertia**: 691,657 (within-cluster sum of squares)
+
 ---
 
 ## **Cluster Summary**

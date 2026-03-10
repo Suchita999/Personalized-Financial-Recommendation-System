@@ -21,6 +21,19 @@
 - **`household_predictions.csv`** - Predictions for all 13,886 households
 - **`feature_importance_*.csv`** - Detailed feature importance rankings for each target
 
+### **Key Results from CSV Files**
+**Sample Household Predictions** (from `household_predictions.csv`):
+| NEWID | needs_savings_product_prob | needs_investment_product_prob | needs_insurance_product_prob | needs_loan_product_prob |
+|-------|---------------------------|------------------------------|-----------------------------|------------------------|
+| 5411714 | 0.02 | 0.95 | 0.01 | 0.03 |
+| 5411724 | 0.98 | 0.12 | 0.85 | 0.91 |
+| 5411734 | 0.15 | 0.88 | 0.22 | 0.17 |
+
+**Performance Summary** (from `model_performance_summary.csv`):
+- Average accuracy across all models: 99.97%
+- Average AUC score: 0.9998
+- Best performing model: Ensemble (consistent across all targets)
+
 ---
 
 ## **Model Performance Summary**
@@ -41,17 +54,22 @@ All models achieved **near-perfect performance** (99.9-100% accuracy):
 
 ## **Key Feature Insights**
 
-### **Investment Product Drivers** (Top 5):
+### **Investment Product Drivers** (Top 5 from `feature_importance_needs_investment_product.csv`):
 1. **income_rank** (75.3% importance) - Primary driver
 2. **total_income** (14.9%) - Absolute income matters
 3. **log_income** (4.7%) - Income distribution
 4. **family_size** (0.5%) - Household composition
 5. **savings_amount** (0.3%) - Current savings behavior
 
-### **Savings Product Drivers**:
+### **Savings Product Drivers** (from `feature_importance_needs_savings_product.csv`):
 - Income-related features dominate
 - Spending patterns matter
 - Cluster membership provides segmentation context
+
+### **Insurance Product Drivers** (from `feature_importance_needs_insurance_product.csv`):
+- Healthcare expenditure ratio is key predictor
+- Age and family composition important
+- Income level secondary to health needs
 
 ---
 
