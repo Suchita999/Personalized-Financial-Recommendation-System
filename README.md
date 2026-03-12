@@ -170,7 +170,7 @@ open clustering-results/xgboost-ensemble/README.md
 
 ```
 ├── EDA/
-│   ├── feature_engineering_fixed.py    # Feature engineering with clustering fixes
+│   ├── feature_engineering_fixed.py   # Feature engineering with clustering fixes
 │   ├── kmeans_clustering.py           # Customer segmentation (K=3)
 │   ├── xgboost_ensemble_modeling.py   # Product recommendation models
 │   ├── feature_selection.py           # Feature optimization (75→60 features)
@@ -185,7 +185,7 @@ open clustering-results/xgboost-ensemble/README.md
 │           ├── model_performance_comparison.png
 │           └── feature_importance_*.png
 ├── data/                              # Raw CE survey data (excluded from git)
-└── README.md                          # This file
+└── README.md                          # Current file
 ```
 
 ---
@@ -212,10 +212,9 @@ open clustering-results/xgboost-ensemble/README.md
 ## Next Steps
 
 1. Production Deployment: Deploy models in recommendation API
-2. Real-time Scoring: Integrate with customer database
-3. Model Monitoring: Track performance over time
-4. Product Expansion: Add more financial product categories
-5. A/B Testing: Validate recommendation effectiveness
+2. Model Monitoring: Track performance over time
+3. Product Expansion: Add more financial product categories
+4. A/B Testing: Validate recommendation effectiveness
 
 ---
 
@@ -228,12 +227,9 @@ open clustering-results/xgboost-ensemble/README.md
 - Scalability: Ready for production deployment
 
 ---
-
 ## Team
 
-**Suchita Sharma** - Data Science & Machine Learning  
-**Yogita Bisht** - Financial Analysis & Product Strategy
+**Suchita Sharma**  
+**Yogita Bisht** 
 
 ---
-
-*This branch contains the complete customer segmentation and product recommendation pipeline with all code, results, and visualizations ready for production deployment.*
