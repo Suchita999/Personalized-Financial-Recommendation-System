@@ -1,5 +1,4 @@
 # Personalized Financial Recommendation System
-**Branch: clean-suchita** - Customer Segmentation & Product Recommendation Pipeline
 
 ---
 
