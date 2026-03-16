@@ -1,0 +1,46 @@
+# Large data files
+*.csv
+*.parquet
+*.feather
+
+# Model files
+*.pkl
+*.joblib
+*.model
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment files
+.env
+.venv/
+venv/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Large visualization files (exclude all, then include specific ones)
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+# Include important visualization files
+!EDA/clustering-results/*.png
+!EDA/clustering-results/xgboost-ensemble/*.png
+
+# Keep small config files
+!requirements.txt
+!README.md
+!.gitignore
