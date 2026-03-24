@@ -17,6 +17,7 @@ sys.path.append(str(Path(__file__).parent))
 
 # Lightweight imports - only load what we need
 from cluster_mapping import ClusterMapper
+from etf_mf_integration import ETFMFIntegration
 
 # Page configuration
 st.set_page_config(
@@ -40,7 +41,7 @@ st.markdown("""
     /* Main container styling */
     .main-header {
         text-align: center;
-        background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        background: linear-gradient(135deg, #a8d5a8 0%, #7fb069 100%);
         color: white;
         padding: 1rem;
         margin: 0;
@@ -54,37 +55,85 @@ st.markdown("""
     
     /* Message container */
     .chat-container {
-        max-height: 300px;
+        max-height: 350px;
         overflow-y: auto;
-        padding: 0.5rem;
-        background: #f8f9fa;
-        border-radius: 15px;
-        margin: 0.2rem 0;
+        padding: 1rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 20px;
+        margin: 0.5rem 0;
+        border: 2px solid #e9ecef;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+        position: relative;
     }
     
-    /* Enhanced message styling */
+    .chat-container::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .chat-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    .chat-container::-webkit-scrollbar-thumb {
+        background: #a8d5a8;
+        border-radius: 10px;
+    }
+    
+    .chat-container::-webkit-scrollbar-thumb:hover {
+        background: #7fb069;
+    }
+    
+    /* Modern chat message styling */
     .message {
-        padding: 0.6rem 1rem;
+        margin: 0.75rem 0;
+        padding: 1rem 1.25rem;
         border-radius: 20px;
-        margin: 0.3rem 0;
-        max-width: 75%;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
+        max-width: 85%;
+        word-wrap: break-word;
         position: relative;
+        animation: fadeIn 0.3s ease-in;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     
     .message:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     
     /* User message styling */
     .user-message {
-        background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        background: linear-gradient(135deg, #a8d5a8 0%, #7fb069 100%);
         color: white;
         margin-left: auto;
         text-align: right;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 20px;
         border-bottom-right-radius: 5px;
+        position: relative;
+        border-right: 4px solid #4a6741;
+    }
+    
+    .user-message::before {
+        content: "👤";
+        position: absolute;
+        top: -8px;
+        right: 12px;
+        background: #4a6741;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
     }
     
     .user-message strong {
@@ -99,11 +148,33 @@ st.markdown("""
         margin-right: auto;
         border: 2px solid #e9ecef;
         border-bottom-left-radius: 5px;
+        border-left: 4px solid #a8d5a8;
+        position: relative;
+    }
+    
+    .bot-message::before {
+        content: "🤖";
+        position: absolute;
+        top: -8px;
+        left: 12px;
+        background: #a8d5a8;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
     }
     
     .bot-message strong {
-        color: #56ab2f;
-        font-weight: 600;
+        color: #4a6741;
+        font-weight: 400;
+    }
+    
+    /* Make all bot message text darker */
+    .bot-message * {
+        color: #4a6741 !important;
     }
     .high-priority {
         border-left: 4px solid #e74c3c;
@@ -134,41 +205,75 @@ st.markdown("""
     
     /* Input area styling */
     .input-container {
-        background: white;
-        padding: 0;
-        border-radius: 15px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        border: 1px solid #e9ecef;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        padding: 1rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border: 2px solid #e9ecef;
+        margin-top: 1rem;
+        position: relative;
     }
     
     /* Button styling */
     .stButton > button {
-        background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        background: linear-gradient(135deg, #a8d5a8 0%, #7fb069 100%);
         color: white;
         border: none;
         padding: 0.75rem 2rem;
         border-radius: 25px;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(86, 171, 47, 0.3);
+        box-shadow: 0 4px 15px rgba(168, 213, 168, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stButton > button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+    
+    .stButton > button:hover::before {
+        left: 100%;
     }
     
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(86, 171, 47, 0.4);
+        box-shadow: 0 6px 20px rgba(168, 213, 168, 0.4);
+        background: linear-gradient(135deg, #7fb069 0%, #4a6741 100%);
+    }
+    
+    .stButton > button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 10px rgba(168, 213, 168, 0.3);
     }
     
     /* Input field styling */
     .stTextInput > div > div > input {
-        border-radius: 10px;
+        border-radius: 15px;
         border: 2px solid #e9ecef;
-        padding: 0.75rem;
+        padding: 1rem;
         transition: all 0.3s ease;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+        font-size: 16px;
     }
     
     .stTextInput > div > div > input:focus {
-        border-color: #56ab2f;
-        box-shadow: 0 0 0 3px rgba(86, 171, 47, 0.1);
+        border-color: #a8d5a8;
+        box-shadow: 0 0 0 3px rgba(168, 213, 168, 0.1), inset 0 2px 4px rgba(0,0,0,0.06);
+        outline: none;
+    }
+    
+    .stTextInput > div > div > input::placeholder {
+        color: #999;
+        font-style: italic;
     }
     
     /* Typing indicator */
@@ -307,6 +412,7 @@ class LiteFinancialChatbot:
     
     def __init__(self):
         self.mapper = ClusterMapper()
+        self.etf_mf_integration = ETFMFIntegration(Path(__file__).parent.parent)
         
         # Initialize session state
         if 'messages' not in st.session_state:
@@ -368,9 +474,9 @@ class LiteFinancialChatbot:
                 st.markdown(f"""
                 <div class="message bot-message">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                        <strong style="display: flex; align-items: center;">
+                        <span style="display: flex; align-items: center; color: #4a6741;">
                             Financial Advisor (FinWise)
-                        </strong>
+                        </span>
                         <span class="timestamp">{timestamp}</span>
                     </div>
                     <div style="color: #2c3e50; line-height: 1.5; white-space: pre-wrap;">{safe_content}</div>
@@ -455,12 +561,12 @@ class LiteFinancialChatbot:
         
         # Send analysis message
         analysis_message = f"""
-**Your Financial Analysis:**
+Your Financial Analysis:
 
-**Income:** ${income:,.0f}
-**Family Size:** {family_size} people
-**Annual Expenses:** ${expenses:,.0f}
-**Savings Rate:** {savings_rate:.1%}
+- Income: ${income:,.0f}
+- Family Size:{family_size} people
+- Annual Expenses: ${expenses:,.0f}
+- Savings Rate: {savings_rate:.1%}
 
 **Your Income Bracket:** {bracket}
 *{description}*
@@ -505,7 +611,7 @@ Would you like to ask me anything specific about your financial situation or rec
         st.session_state.classification_done = True
     
     def _generate_simple_recommendations(self):
-        """Generate simplified recommendations without heavy ETF/MF data"""
+        """Generate recommendations using real ETF/MF data"""
         bracket = st.session_state.user_data.get('income_bracket', 'Middle Income Families')
         savings_rate = st.session_state.user_data.get('savings_rate', 0)
         income = st.session_state.user_data.get('income', 0)
@@ -565,15 +671,25 @@ Would you like to ask me anything specific about your financial situation or rec
                 }
             ]
         
-        # Add simple investment recommendation
+        # Add real ETF/MF recommendations
         if income > 25000:
-            recommendations.append({
-                'type': 'Investment',
-                'priority': 'High',
-                'action': 'Start with index fund investing',
-                'reason': 'Long-term wealth building',
-                'details': 'Low-cost S&P 500 index fund with automatic investments'
-            })
+            user_profile = {
+                'total_income': income,
+                'consensus_cluster_name': bracket,
+                'savings_rate': savings_rate
+            }
+            
+            real_recommendations = self.etf_mf_integration.get_investment_recommendations(user_profile)
+            
+            # Add real recommendations to the list
+            for rec in real_recommendations:
+                recommendations.append({
+                    'type': 'Investment',
+                    'priority': 'High',
+                    'action': f"Invest in {rec.get('Name', 'Selected Fund')}",
+                    'reason': rec.get('Category', 'Based on your risk profile'),
+                    'details': f"{rec.get('Category', 'Investment')} - Min investment: ${rec.get('Min Investment', 1000):,.0f}"
+                })
         
         # Add savings recommendation if needed
         if savings_rate < 0.1 and income > 0:
@@ -623,7 +739,7 @@ Would you like to ask me anything specific about your financial situation or rec
         # Full-width header at top
         st.markdown("""
         <div class="main-header">
-            <h1 style="margin: 0; font-size: 3rem;">FinWise</h1>
+            <h1 style="margin: 0; font-size: 3rem;">Financial Recommendation System</h1>
             <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 1.5rem;">Your personal AI-powered financial assistant</p>
         </div>
         """, unsafe_allow_html=True)
@@ -631,7 +747,7 @@ Would you like to ask me anything specific about your financial situation or rec
         # Tips section (only show before classification) - right after header
         if not st.session_state.classification_done:
             st.markdown("""
-            <div class="help-text" style="margin: 5rem 0 1rem 0; padding: 0.5rem;">
+            <div class="help-text" style="margin: 5rem 0 0 0; padding: 0.5rem; color: black;">
                 <strong>Tips:</strong><br>
                 • Enter numbers without commas or dollar signs<br>
                 • Be honest about your financial situation for better recommendations<br>
@@ -640,7 +756,7 @@ Would you like to ask me anything specific about your financial situation or rec
             </div>
             """, unsafe_allow_html=True)
         
-        # Chat container
+        # Chat container - merged with tips
         chat_container = st.container()
         
         with chat_container:
@@ -654,10 +770,17 @@ Would you like to ask me anything specific about your financial situation or rec
             with st.form(key="followup_form", clear_on_submit=True):
                 user_input = st.text_input("Ask me anything about your finances:", key="followup_input", 
                                          placeholder="e.g., How much should I save for retirement?")
-                submit_button = st.form_submit_button("Send", type="primary")
+                col1, col2 = st.columns([1, 1])
+                with col1:
+                    submit_button = st.form_submit_button("Send", type="primary")
+                with col2:
+                    new_chat_button = st.form_submit_button("New Chat")
                 if submit_button and user_input:
                     self._add_user_message(user_input)
                     self._handle_follow_up_questions(user_input)
+                    st.rerun()
+                elif new_chat_button:
+                    self._restart_chat()
                     st.rerun()
         else:
             with st.form(key="main_form", clear_on_submit=True):
@@ -667,13 +790,13 @@ Would you like to ask me anything specific about your financial situation or rec
                 with col1:
                     submit_button = st.form_submit_button("Send", type="primary")
                 with col2:
-                    restart_button = st.form_submit_button("Restart")
+                    new_chat_button = st.form_submit_button("New Chat")
                 
                 if submit_button and user_input:
                     self._add_user_message(user_input)
                     self._process_user_input(user_input)
                     st.rerun()
-                elif restart_button:
+                elif new_chat_button:
                     self._restart_chat()
                     st.rerun()
         

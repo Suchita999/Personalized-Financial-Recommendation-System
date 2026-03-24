@@ -12,14 +12,35 @@ warnings.filterwarnings('ignore')
 class ETFMFIntegration:
     """Integration for ETF and Mutual Funds recommendations"""
     
+    _instance = None
+    _data_loaded = False
+    _etf_data = None
+    _mf_data = None
+    
+    def __new__(cls, data_dir=None):
+        if cls._instance is None:
+            cls._instance = super(ETFMFIntegration, cls).__new__(cls)
+        return cls._instance
+    
     def __init__(self, data_dir):
-        self.data_dir = Path(data_dir)
-        self.etf_data = None
-        self.mf_data = None
-        self.load_data()
+        if not hasattr(self, 'initialized'):
+            self.data_dir = Path(data_dir)
+            self.initialized = True
+            self.load_data()
+    
+    @property
+    def etf_data(self):
+        return self._etf_data
+    
+    @property
+    def mf_data(self):
+        return self._mf_data
     
     def load_data(self):
         """Load ETF and Mutual Funds data"""
+        if self._data_loaded:
+            return  # Data already loaded
+            
         try:
             # Load ETF data - try multiple possible paths
             etf_paths = [
@@ -31,10 +52,17 @@ class ETFMFIntegration:
             etf_data_loaded = False
             for etf_path in etf_paths:
                 if etf_path.exists():
-                    self.etf_data = pd.read_csv(etf_path)
-                    print(f"Loaded {len(self.etf_data)} ETFs from {etf_path.name}")
-                    etf_data_loaded = True
-                    break
+                    # Load only essential columns to reduce memory usage
+                    essential_columns = ['Name', 'Symbol', 'Category', 'Expense Ratio', 'Min Investment']
+                    try:
+                        # Read only first 1000 rows to reduce memory
+                        self._etf_data = pd.read_csv(etf_path, nrows=1000)
+                        print(f"Loaded {len(self._etf_data)} ETFs from {etf_path.name}")
+                        etf_data_loaded = True
+                        break
+                    except Exception as e:
+                        print(f"Error reading {etf_path}: {e}")
+                        continue
             
             if not etf_data_loaded:
                 print("ETF data file not found - using mock data")
@@ -50,19 +78,38 @@ class ETFMFIntegration:
                 if mf_path.exists():
                     mf_files = list(mf_path.glob("*.csv"))
                     if mf_files:
-                        self.mf_data = pd.concat([pd.read_csv(f) for f in mf_files[:3]])  # Limit to 3 files
-                        print(f"Loaded {len(self.mf_data)} mutual fund records")
-                        break
+                        try:
+                            # Load only first 2 files and limit rows to reduce memory
+                            mf_dfs = []
+                            for f in mf_files[:2]:
+                                try:
+                                    df = pd.read_csv(f, nrows=500)  # Limit to 500 rows per file
+                                    mf_dfs.append(df)
+                                    print(f"Loaded {len(df)} records from {f.name}")
+                                except Exception as e:
+                                    print(f"Error reading {f.name}: {e}")
+                                    continue
+                            
+                            if mf_dfs:
+                                self._mf_data = pd.concat(mf_dfs, ignore_index=True)
+                                print(f"Loaded {len(self._mf_data)} total mutual fund records")
+                                break
+                        except Exception as e:
+                            print(f"Error processing mutual fund files: {e}")
+                            continue
             
-            if self.mf_data is None:
+            if self._mf_data is None:
                 print("Mutual fund data not found - using mock data")
                 self._create_mock_mf_data()
+            
+            self._data_loaded = True  # Mark as loaded
             
         except Exception as e:
             print(f"Error loading ETF/MF data: {e}")
             # Create mock data as fallback
             self._create_mock_etf_data()
             self._create_mock_mf_data()
+            self._data_loaded = True  # Mark as loaded even for mock data
     
     def _create_mock_etf_data(self):
         """Create mock ETF data when real data is not available"""
@@ -79,8 +126,8 @@ class ETFMFIntegration:
             {'Name': 'Vanguard Growth ETF', 'Symbol': 'VUG', 'Category': 'Growth', 'Expense Ratio': 0.04}
         ]
         
-        self.etf_data = pd.DataFrame(mock_etfs)
-        print(f"Created {len(self.etf_data)} mock ETF records")
+        self._etf_data = pd.DataFrame(mock_etfs)
+        print(f"Created {len(self._etf_data)} mock ETF records")
     
     def _create_mock_mf_data(self):
         """Create mock Mutual Fund data when real data is not available"""
@@ -92,8 +139,8 @@ class ETFMFIntegration:
             {'Name': 'Vanguard Total Bond Market', 'Category': 'Bonds', 'Expense Ratio': 0.11, 'Min Investment': 3000}
         ]
         
-        self.mf_data = pd.DataFrame(mock_mfs)
-        print(f"Created {len(self.mf_data)} mock mutual fund records")
+        self._mf_data = pd.DataFrame(mock_mfs)
+        print(f"Created {len(self._mf_data)} mock mutual fund records")
     
     def get_investment_recommendations(self, user_profile):
         """Get investment recommendations based on user profile"""
