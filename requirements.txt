@@ -1,0 +1,25 @@
+# ── Data Loading (Notebooks 1 & 2) ──
+ucimlrepo
+kagglehub
+
+# ── Core ML ──
+pandas>=2.0
+numpy>=1.24
+scikit-learn>=1.3
+xgboost>=2.0
+joblib
+
+# ── Visualization ──
+matplotlib>=3.8
+seaborn>=0.13
+
+# ── Web App ──
+streamlit>=1.32
+
+# ── RAG Chatbot (optional — app works without these) ──
+langchain>=0.2
+langchain-google-genai>=2.0
+langchain-community>=0.2
+chromadb>=0.4
+sentence-transformers>=2.6
+google-generativeai>=0.8
