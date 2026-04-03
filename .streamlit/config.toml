@@ -1,0 +1,15 @@
+[theme]
+primaryColor = "#8ac35a"
+backgroundColor = "#0a0f0a"
+secondaryBackgroundColor = "#1a1f1a"
+textColor = "#f0ede6"
+
+[server]
+headless = true
+port = 8501
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
