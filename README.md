@@ -160,24 +160,109 @@ open clustering-results/xgboost-ensemble/README.md
 ## Project Structure
 
 ```
-├── EDA/
-│   ├── feature_engineering_fixed.py    # Feature engineering with clustering fixes
-│   ├── kmeans_clustering.py           # Customer segmentation (K=3)
-│   ├── xgboost_ensemble_modeling.py   # Product recommendation models
-│   ├── feature_selection.py           # Feature optimization (75→60 features)
-│   ├── missing_values.py              # Data cleaning and imputation
-│   ├── skew_transform.py              # Log transformation for skewed data
-│   └── clustering-results/            # All results and visualizations
-│       ├── README.md                  # Clustering results summary
-│       ├── optimal_k_analysis.png     # K selection analysis
-│       ├── kmeans_visualizations.png  # Cluster separation plots
-│       └── xgboost-ensemble/          # Product recommendation results
-│           ├── README.md              # Model performance summary
-│           ├── model_performance_comparison.png
-│           └── feature_importance_*.png
-├── data/                              # Raw CE survey data (excluded from git)
-└── README.md                          # This file
+src/
+├── ml/                           # Machine Learning Components
+│   ├── __init__.py
+│   ├── cluster_mapping.py
+│   ├── etf_mf_integration.py
+│   ├── feature_engineering.py
+│   ├── feature_selection.py
+│   ├── kmeans_clustering.py
+│   ├── missing_values.py
+│   ├── multi_k_clustering.py
+│   ├── new_user_classifier.py
+│   ├── skew_transform.py
+│   ├── xgboost_ensemble_modeling.py
+│   └── README.md
+├── Rules-RAG/                     # Rules-Based RAG Components
+│   ├── __init__.py
+│   ├── fund_matching_rag.py
+│   ├── ml_pipeline.py
+│   ├── rag_pipeline.py
+│   └── rule_engine.py
+├── streamlit/                     # Streamlit Applications
+│   ├── __init__.py
+│   ├── app.py
+│   ├── dashboard.py
+│   ├── landing_page.py
+│   ├── streamlit_chatbot.py
+│   └── README.md
+├── rag_system.py                 # Main RAG System
+└── [other files]
 ```
+
+---
+
+## RAG Integration
+
+### Overview
+Successfully integrated Retrieval-Augmented Generation (RAG) capabilities into the Financial Recommendation System. The chatbot now provides detailed, knowledge-based financial advice beyond simple rule-based responses.
+
+### Key Features
+
+#### Intelligent Query Processing
+- Detects 20+ financial keywords (invest, retirement, emergency, budget, debt, tax, etc.)
+- Retrieves top 3 most relevant documents using semantic similarity
+- Generates contextual responses based on user's financial profile
+
+#### Personalized Context
+- User profile includes: income, expenses, savings rate, family size, income bracket
+- Responses are tailored to user's specific financial situation
+- Maintains consistency with existing cluster-based recommendations
+
+### Knowledge Base Structure
+
+** Categories (13 total):**
+- **emergency_fund**: Basics and importance
+- **retirement**: Fundamentals and FIRE movement
+- **budgeting**: Strategies and methods
+- **investing**: Basics and ETF/mutual funds
+- **debt**: Management and strategies
+- **taxes**: Planning and optimization
+- **insurance**: Fundamentals and types
+- **real_estate**: Home buying guide
+- **education**: College savings strategies
+- **etf**: Basics and advantages
+- **mutual_funds**: Basics and comparison
+- **comparison**: ETF vs mutual funds
+
+### Technical Implementation
+
+#### Dependencies
+- `chromadb==0.5.5` - Vector database for semantic search
+- `sentence-transformers==3.1.0` - Text embeddings
+- `google-generativeai` - AI response generation (optional)
+
+#### File Structure
+```
+src/
+├── rag_system.py              # Core RAG implementation
+├── streamlit/streamlit_chatbot.py  # Enhanced with RAG integration
+└── Rules-RAG/              # Rules-based RAG components
+    ├── rag_pipeline.py
+    ├── fund_matching_rag.py
+    └── rule_engine.py
+
+data/
+├── rag_knowledge_base/        # Knowledge documents storage
+└── vector_store/             # ChromaDB persistent storage
+```
+
+### Usage Examples
+
+#### Enhanced Query Handling
+```python
+# Example queries that trigger RAG:
+"Suggest some retirement plans?"
+"What's the difference between ETFs and mutual funds?"
+"How do I create an emergency fund?"
+```
+
+#### Response Enhancement
+- **Before**: Simple rule-based responses for basic topics
+- **After**: Detailed, comprehensive financial guidance with structured knowledge
+- **Coverage**: 13 financial topics vs. 4 basic topics previously
+
 ---
 
 ## Technical Notes
