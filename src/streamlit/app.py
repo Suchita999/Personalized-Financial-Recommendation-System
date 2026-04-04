@@ -1,4 +1,12 @@
 import streamlit as st
+import sys
+import os
+from pathlib import Path
+
+# Suppress ChromaDB telemetry to avoid errors
+os.environ['ANONYMIZED_TELEMETRY'] = 'False'
+os.environ['CHROMA_TELEMETRY'] = 'False'
+os.environ['POSTHOG_DISABLE'] = 'True'
 
 # Configure page settings
 st.set_page_config(
@@ -7,6 +15,47 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
+def check_chromadb():
+    """Check if ChromaDB is available"""
+    try:
+        import chromadb
+        return True
+    except ImportError:
+        return False
+
+def show_chromadb_error():
+    """Show helpful error when ChromaDB is not available"""
+    st.error("⚠️ RAG System Unavailable")
+    st.info("""
+    **ChromaDB is not installed on this deployment**
+    
+    The app will run in limited mode:
+    - ✅ Landing page works
+    - ✅ Dashboard works  
+    - ❌ Chatbot RAG features disabled
+    - ❌ Advanced financial advice unavailable
+    
+    **To fix this:**
+    1. Update requirements.txt with correct ChromaDB version
+    2. Redeploy the application
+    3. Contact support if issues persist
+    """)
+    
+    # Show basic navigation
+    st.write("---")
+    st.subheader("Available Features")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        if st.button("🏠 Landing Page", key="landing_fallback"):
+            st.session_state.current_page = 'landing'
+            st.rerun()
+    
+    with col2:
+        if st.button("📊 Dashboard", key="dashboard_fallback"):
+            st.session_state.current_page = 'dashboard'
+            st.rerun()
 
 def main():
     # Initialize session state for navigation
@@ -85,11 +134,22 @@ def main():
 
     # Page content
     if page == 'chatbot':
+        # Check ChromaDB availability before loading chatbot
+        if not check_chromadb():
+            show_chromadb_error()
+            return
+            
         try:
             import streamlit_chatbot
             chatbot = streamlit_chatbot.LiteFinancialChatbot()
             chatbot.run()
                 
+        except ImportError as e:
+            if "chromadb" in str(e).lower():
+                show_chromadb_error()
+            else:
+                st.error(f"Error loading chatbot: {e}")
+                st.write("Please check the console for details.")
         except Exception as e:
             st.error(f"Error loading chatbot: {e}")
             st.write("Please check the console for details.")

@@ -437,6 +437,12 @@ class LiteFinancialChatbot:
     """Premium FinWise chatbot interface"""
 
     def __init__(self):
+        # Check ChromaDB availability first
+        try:
+            import chromadb
+        except ImportError:
+            raise ImportError("ChromaDB is not installed. RAG functionality is unavailable.")
+        
         self.mapper = ClusterMapper()
         self.etf_mf_integration = ETFMFIntegration(Path(__file__).parent.parent)
         self.rag_system = FinancialRAGSystem(Path(__file__).parent.parent.parent)
