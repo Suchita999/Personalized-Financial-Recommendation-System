@@ -26,7 +26,7 @@ def check_chromadb():
 
 def show_chromadb_error():
     """Show helpful error when ChromaDB is not available"""
-    st.error("⚠️ RAG System Unavailable")
+    st.error("RAG System Unavailable")
     st.info("""
     **ChromaDB is not installed on this deployment**
     

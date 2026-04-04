@@ -1,7 +1,8 @@
 
 # Personalized Financial Recommendation System
-# Requirements - Python 3.12+
+# Combined Requirements - Development + Streamlit Cloud
 # Install: pip install -r requirements.txt
+# Python 3.12+
 
 # Core Data Science
 numpy==1.26.4
@@ -23,13 +24,13 @@ kagglehub==0.3.4
 # Model Persistence
 joblib==1.4.2
 
-# API & Application (for integration phase)
+# API & Application
 fastapi==0.115.0
 uvicorn==0.30.6
 streamlit==1.38.0
 
-# RAG Pipeline 
-chromadb==0.5.5
+# RAG Pipeline (Stable Versions for Cloud Compatibility)
+chromadb==0.4.22
 sentence-transformers==3.1.0
 google-generativeai==0.8.3
 langchain==0.3.0
