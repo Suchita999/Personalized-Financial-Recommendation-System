@@ -30,7 +30,7 @@ uvicorn==0.30.6
 streamlit==1.38.0
 
 # RAG Pipeline (Streamlit Cloud Compatible)
-chromadb==0.4.15
+chromadb==0.4.11
 sentence-transformers==2.2.2
 google-generativeai==0.3.2
 langchain==0.0.350

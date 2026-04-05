@@ -35,9 +35,17 @@ def check_chromadb():
         import chromadb
         # Test basic ChromaDB functionality
         client = chromadb.Client()
+        st.success("✅ ChromaDB imported successfully")
         return True
+    except ImportError as e:
+        st.error(f"❌ ChromaDB import failed: {e}")
+        st.write("📋 Debugging info:")
+        st.write(f"- Python version: {sys.version}")
+        st.write(f"- Working directory: {os.getcwd()}")
+        st.write(f"- Python path: {sys.path[:3]}...")
+        return False
     except Exception as e:
-        st.write(f"ChromaDB check failed: {e}")
+        st.error(f"❌ ChromaDB check failed: {e}")
         return False
 
 def show_chromadb_error():
