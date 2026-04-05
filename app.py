@@ -15,8 +15,8 @@ if (project_root / "src").exists():
 else:
     sys.path.insert(0, str(project_root))
 
-# Add src/streamlit to path for direct imports
-sys.path.insert(0, str(project_root / "src" / "streamlit"))
+# Add src/front_end to path for direct imports
+sys.path.insert(0, str(project_root / "src" / "front_end"))
 
 # Suppress ChromaDB telemetry and fix compatibility
 os.environ['ANONYMIZED_TELEMETRY'] = 'False'
@@ -216,8 +216,8 @@ def main():
             
     elif page == 'dashboard':
         try:
-            import dashboard
-            dashboard.main()
+            from front_end.dashboard import main as dashboard_main
+            dashboard_main()
                 
         except Exception as e:
             st.error(f"Error loading dashboard: {e}")
@@ -225,7 +225,7 @@ def main():
             
     elif page == 'landing':
         try:
-            from streamlit.app import main as landing_main
+            from front_end.app import main as landing_main
             landing_main()
                 
         except Exception as e:
@@ -235,7 +235,7 @@ def main():
     else:
         # Default landing page
         try:
-            from streamlit.app import main as landing_main
+            from front_end.app import main as landing_main
             landing_main()
                 
         except Exception as e:
