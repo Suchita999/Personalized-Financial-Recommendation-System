@@ -8,8 +8,15 @@ import os
 from pathlib import Path
 import streamlit as st
 
-# Add src to Python path
-sys.path.insert(0, str(Path(__file__).parent / "src"))
+# Add src to Python path (handles running from any directory)
+project_root = Path(__file__).parent
+if (project_root / "src").exists():
+    sys.path.insert(0, str(project_root / "src"))
+else:
+    sys.path.insert(0, str(project_root))
+
+# Add src/streamlit to path for direct imports
+sys.path.insert(0, str(project_root / "src" / "streamlit"))
 
 # Suppress ChromaDB telemetry and fix compatibility
 os.environ['ANONYMIZED_TELEMETRY'] = 'False'
@@ -35,21 +42,21 @@ def check_chromadb():
 
 def show_chromadb_error():
     """Show helpful error when ChromaDB is not available"""
-    st.error("⚠️ RAG System Unavailable")
+    st.error("RAG System Unavailable")
     st.info("""
     **ChromaDB installation issue detected**
     
     The app will run in limited mode:
-    - ✅ Landing page works
-    - ✅ Dashboard works  
-    - ❌ Chatbot RAG features disabled
-    - ❌ Advanced financial advice unavailable
+    - Landing page works
+    - Dashboard works  
+    - Chatbot RAG features disabled
+    - Advanced financial advice unavailable
     
     **Troubleshooting Steps:**
-    1. ✅ Updated requirements.txt with ChromaDB 0.4.15
-    2. 🔄 Redeploy application (force restart)
-    3. ⏳ Wait 2-3 minutes for full initialization
-    4. 📱 Try accessing chatbot again
+    1. Updated requirements.txt with ChromaDB 0.4.15
+    2. Redeploy application (force restart)
+    3. Wait 2-3 minutes for full initialization
+    4. Try accessing chatbot again
     
     **If still failing:**
     - Clear browser cache
@@ -63,18 +70,18 @@ def show_chromadb_error():
     col1, col2 = st.columns(2)
     
     with col1:
-        if st.button("🏠 Landing Page", key="landing_fallback"):
+        if st.button("Landing Page", key="landing_fallback"):
             st.session_state.current_page = 'landing'
             st.rerun()
     
     with col2:
-        if st.button("📊 Dashboard", key="dashboard_fallback"):
+        if st.button("Dashboard", key="dashboard_fallback"):
             st.session_state.current_page = 'dashboard'
             st.rerun()
     
     # Add direct chatbot links
     st.write("---")
-    st.subheader("🤖 Chatbot Options")
+    st.subheader("Chatbot Options")
     
     st.info("""
     **Try Chatbot with Limited Features:**
@@ -86,26 +93,26 @@ def show_chromadb_error():
     - Budget planning
     
     **Direct Links:**
-    - [🤖 Try Chatbot (Basic Mode)](?page=chatbot)
-    - [📊 View Dashboard](?page=dashboard)
-    - [🏠 Back to Landing](?page=landing)
+    - [Try Chatbot (Basic Mode)](?page=chatbot)
+    - [View Dashboard](?page=dashboard)
+    - [Back to Landing](?page=landing)
     """)
     
     # Quick navigation buttons
     col3, col4, col5 = st.columns(3)
     
     with col3:
-        if st.button("🤖 Try Chatbot", key="chatbot_basic"):
+        if st.button("Try Chatbot", key="chatbot_basic"):
             st.session_state.current_page = 'chatbot'
             st.rerun()
     
     with col4:
-        if st.button("📊 Dashboard", key="dashboard_link"):
+        if st.button("Dashboard", key="dashboard_link"):
             st.session_state.current_page = 'dashboard'
             st.rerun()
     
     with col5:
-        if st.button("🏠 Landing", key="landing_link"):
+        if st.button("Landing", key="landing_link"):
             st.session_state.current_page = 'landing'
             st.rerun()
 
@@ -193,7 +200,7 @@ def main():
             return
             
         try:
-            from streamlit.streamlit_chatbot import LiteFinancialChatbot
+            from streamlit_chatbot import LiteFinancialChatbot
             chatbot = LiteFinancialChatbot()
             chatbot.run()
                 
@@ -205,35 +212,35 @@ def main():
                 st.write("Please check console for details.")
         except Exception as e:
             st.error(f"Error loading chatbot: {e}")
-            st.write("Please check the console for details.")
+            st.write("Please check console for details.")
             
     elif page == 'dashboard':
         try:
-            from streamlit.dashboard import main as dashboard_main
-            dashboard_main()
+            import dashboard
+            dashboard.main()
                 
         except Exception as e:
             st.error(f"Error loading dashboard: {e}")
-            st.write("Please check the console for details.")
+            st.write("Please check for details.")
             
     elif page == 'landing':
         try:
-            from streamlit.landing_page import main as landing_main
+            from streamlit.app import main as landing_main
             landing_main()
                 
         except Exception as e:
             st.error(f"Error loading landing page: {e}")
-            st.write("Please check the console for details.")
+            st.write("Please check for details.")
             
     else:
         # Default landing page
         try:
-            from streamlit.landing_page import main as landing_main
+            from streamlit.app import main as landing_main
             landing_main()
                 
         except Exception as e:
             st.error(f"Error loading landing page: {e}")
-            st.write("Please check the console for details.")
+            st.write("Please check for details.")
 
 if __name__ == "__main__":
     main()
