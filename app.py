@@ -16,7 +16,8 @@ else:
     sys.path.insert(0, str(project_root))
 
 # Add src/front_end to path for direct imports
-sys.path.insert(0, str(project_root / "src" / "front_end"))
+if (project_root / "src" / "front_end").exists():
+    sys.path.insert(0, str(project_root / "src" / "front_end"))
 
 # Suppress ChromaDB telemetry and fix compatibility
 os.environ['ANONYMIZED_TELEMETRY'] = 'False'

@@ -2,7 +2,7 @@
 # Personalized Financial Recommendation System
 # Combined Requirements - Development + Streamlit Cloud
 # Install: pip install -r requirements.txt
-# Python 3.12+
+# Python 3.11+ (recommended for ChromaDB compatibility)
 
 # Core Data Science
 numpy==1.26.4
@@ -30,7 +30,7 @@ uvicorn==0.30.6
 streamlit==1.38.0
 
 # RAG Pipeline (Streamlit Cloud Compatible)
-chromadb==0.4.10
+chromadb==0.4.0
 sentence-transformers==2.2.2
 google-generativeai==0.3.2
 langchain==0.0.350
