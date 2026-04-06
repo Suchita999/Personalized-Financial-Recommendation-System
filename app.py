@@ -31,29 +31,15 @@ import logging
 logging.basicConfig(level=logging.WARNING)
 
 def check_chromadb():
-    """Check if ChromaDB is available with timeout"""
-    import signal
-    
-    def timeout_handler(signum, frame):
-        raise TimeoutError("ChromaDB check timed out")
-    
+    """Check if ChromaDB is available"""
     try:
-        signal.signal(signal.SIGALRM, timeout_handler)
-        signal.alarm(10)  # 10 second timeout
-        
         import chromadb
         # Test basic ChromaDB functionality
         client = chromadb.Client()
-        
-        signal.alarm(0)  # Cancel timeout
         st.success("✅ ChromaDB imported successfully")
         return True
-        
     except ImportError as e:
         st.error(f"❌ ChromaDB import failed: {e}")
-        return False
-    except TimeoutError:
-        st.error("❌ ChromaDB check timed out - using limited mode")
         return False
     except Exception as e:
         st.error(f"❌ ChromaDB check failed: {e}")
