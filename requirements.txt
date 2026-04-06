@@ -1,7 +1,3 @@
-# Personalized Financial Recommendation System
-# Clean Requirements for Render Deployment
-# Python 3.11 - guaranteed compatibility
-
 # Core Streamlit
 streamlit==1.38.0
 
@@ -12,9 +8,9 @@ scipy==1.13.1
 
 # RAG System
 chromadb==0.5.5
-sentence-transformers==2.2.2
+sentence-transformers==3.0.1
 
-# LangChain (Working Compatible Versions)
+# LangChain
 langchain==0.3.28
 langchain-core==0.3.83
 langchain-text-splitters==0.3.11
@@ -24,9 +20,8 @@ langsmith==0.3.45
 
 # AI/ML
 google-generativeai==0.3.2
-transformers==4.57.6
-torch==2.11.0
-gensim==4.3.3
+transformers==4.46.0
+torch==2.5.1
 
 # Visualization
 matplotlib==3.9.2
@@ -36,21 +31,22 @@ plotly==5.17.0
 # Machine Learning
 scikit-learn==1.5.1
 xgboost==2.1.1
+gensim==4.3.3
 
 # Utilities
-requests==2.33.1
+requests==2.32.3
 python-dateutil==2.9.0
 pytz==2024.1
-pyyaml==6.0.3
-certifi==2025.7.14
+pyyaml==6.0.1
+certifi==2024.8.30
 zstandard==0.23.0
 
 # API Framework
-fastapi==0.99.1
+fastapi==0.115.0
 uvicorn==0.30.6
 
 # Data Processing
 joblib==1.4.2
 
 # Environment
-python-dotenv==1.2.2 
+python-dotenv==1.0.1
