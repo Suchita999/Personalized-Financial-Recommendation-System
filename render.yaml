@@ -3,7 +3,7 @@ services:
     name: finwise-app
     runtime: python
     pythonVersion: 3.11
-    buildCommand: pip install --no-deps -r requirements_minimal.txt
+    buildCommand: pip install --no-deps -r requirements.txt
     startCommand: streamlit run app.py --server.port=$PORT --server.address=0.0.0.0
     envVars:
       - key: PYTHON_VERSION

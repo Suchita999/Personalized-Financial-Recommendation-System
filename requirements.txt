@@ -1,26 +1,56 @@
-
 # Personalized Financial Recommendation System
-# Combined Requirements - Development + Streamlit Cloud
-# Install: pip install -r requirements.txt
-# Python 3.11 (recommended for fastest deployment)
+# Clean Requirements for Render Deployment
+# Python 3.11 - guaranteed compatibility
 
-# Core Data Science
-numpy==2.0.0
+# Core Streamlit
+streamlit==1.38.0
+
+# Data Science Core
+numpy==1.26.4
 pandas==2.2.3
-scikit-learn==1.5.1
+scipy==1.13.1
 
-# Gradient Boosting
-xgboost==2.0.3
+# RAG System
+chromadb==0.5.5
+sentence-transformers==2.2.2
+
+# LangChain (Working Compatible Versions)
+langchain==0.3.28
+langchain-core==0.3.83
+langchain-text-splitters==0.3.11
+langchain-community==0.3.15
+langchain-openai==0.3.0
+langsmith==0.3.45
+
+# AI/ML
+google-generativeai==0.3.2
+transformers==4.57.6
+torch==2.11.0
+gensim==4.3.3
+
+# Visualization
+matplotlib==3.9.2
+seaborn==0.13.2
+plotly==5.17.0
 
 # Machine Learning
-scikit-learn==1.4.2
-
-# RAG Pipeline (Streamlit Cloud Compatible)
-chromadb==0.3.26
-sentence-transformers==2.2.2
-google-generativeai==0.3.2
+scikit-learn==1.5.1
+xgboost==2.1.1
 
 # Utilities
+requests==2.33.1
 python-dateutil==2.9.0
 pytz==2024.1
-certifi==2025.7.14 
+pyyaml==6.0.3
+certifi==2025.7.14
+zstandard==0.23.0
+
+# API Framework
+fastapi==0.99.1
+uvicorn==0.30.6
+
+# Data Processing
+joblib==1.4.2
+
+# Environment
+python-dotenv==1.2.2 
