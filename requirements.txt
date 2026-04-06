@@ -5,8 +5,8 @@
 # Python 3.11 (recommended for fastest deployment)
 
 # Core Data Science
-numpy==1.26.4
-pandas==2.2.2
+numpy==2.0.0
+pandas==2.2.3
 scikit-learn==1.5.1
 
 # Gradient Boosting
