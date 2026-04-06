@@ -14,3 +14,5 @@ services:
         value: false
       - key: POSTHOG_DISABLE
         value: true
+      - key: PIP_NO_CACHE_DIR
+        value: /tmp/pip-cache
