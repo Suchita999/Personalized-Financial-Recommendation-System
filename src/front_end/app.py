@@ -31,10 +31,10 @@ def show_chromadb_error():
     **ChromaDB is not installed on this deployment**
     
     The app will run in limited mode:
-    - ✅ Landing page works
-    - ✅ Dashboard works  
-    - ❌ Chatbot RAG features disabled
-    - ❌ Advanced financial advice unavailable
+    - Landing page works
+    - Dashboard works  
+    - Chatbot RAG features disabled
+    - Advanced financial advice unavailable
     
     **To fix this:**
     1. Update requirements.txt with correct ChromaDB version
@@ -48,18 +48,18 @@ def show_chromadb_error():
     col1, col2 = st.columns(2)
     
     with col1:
-        if st.button("🏠 Landing Page", key="landing_fallback"):
+        if st.button("Landing Page", key="landing_fallback"):
             st.session_state.current_page = 'landing'
             st.rerun()
     
     with col2:
-        if st.button("📊 Dashboard", key="dashboard_fallback"):
+        if st.button("Dashboard", key="dashboard_fallback"):
             st.session_state.current_page = 'dashboard'
             st.rerun()
     
     # Add direct chatbot links
     st.write("---")
-    st.subheader("🤖 Chatbot Options")
+    st.subheader("Chatbot Options")
     
     st.info("""
     **Try Chatbot with Limited Features:**
@@ -71,9 +71,9 @@ def show_chromadb_error():
     - Budget planning
     
     **Direct Links:**
-    - [🤖 Try Chatbot (Basic Mode)](?page=chatbot)
-    - [📊 View Dashboard](?page=dashboard)
-    - [🏠 Back to Landing](?page=landing)
+    - [Try Chatbot (Basic Mode)](?page=chatbot)
+    - [View Dashboard](?page=dashboard)
+    - [Back to Landing](?page=landing)
     """)
     
     # Quick navigation buttons
@@ -85,12 +85,12 @@ def show_chromadb_error():
             st.rerun()
     
     with col4:
-        if st.button("📊 Dashboard", key="dashboard_link"):
+        if st.button("Dashboard", key="dashboard_link"):
             st.session_state.current_page = 'dashboard'
             st.rerun()
     
     with col5:
-        if st.button("🏠 Landing", key="landing_link"):
+        if st.button("Landing", key="landing_link"):
             st.session_state.current_page = 'landing'
             st.rerun()
 
