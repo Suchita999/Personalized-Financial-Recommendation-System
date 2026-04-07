@@ -6,6 +6,7 @@
 
 AI-powered financial recommendation system that analyzes customer demographics, income, and spending patterns to provide personalized financial product recommendations. Complete pipeline from CE survey data to actionable insights.
 
+deployed on : https://vmwg7knebklvbjmrwbggns.streamlit.app/
 ---
 
 ## Key Achievements
