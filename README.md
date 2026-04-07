@@ -6,7 +6,7 @@
 
 AI-powered financial recommendation system that analyzes customer demographics, income, and spending patterns to provide personalized financial product recommendations. Complete pipeline from CE survey data to actionable insights.
 
-deployed on : https://vmwg7knebklvbjmrwbggns.streamlit.app/
+Deployed on : https://vmwg7knebklvbjmrwbggns.streamlit.app/
 ---
 
 ## Key Achievements
@@ -181,7 +181,7 @@ src/
 │   ├── ml_pipeline.py
 │   ├── rag_pipeline.py
 │   └── rule_engine.py
-├── streamlit/                     # Streamlit Applications
+├── front_end/                     # Streamlit Applications
 │   ├── __init__.py
 │   ├── app.py
 │   ├── dashboard.py
@@ -271,13 +271,13 @@ data/
 - Dataset: Consumer Expenditure Survey Interview Data (13,886 households)
 - Features: 75 engineered financial and demographic variables
 - Models: K-means clustering + XGBoost ensemble
-- Performance: 99.9-100% prediction accuracy
+- Performance: 80-95% prediction accuracy
 - Scalability: Ready for production deployment
 
 ---
 
 ## Team
 
-**Suchita Sharma** 
-**Yogita Bisht** 
+*Suchita Sharma** 
+*Yogita Bisht** 
 ---
