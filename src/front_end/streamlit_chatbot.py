@@ -316,16 +316,26 @@ def inject_chat_css():
         .input-footer div[data-testid="stTextInput"] input,
         .input-footer div[data-testid="stTextInput"] textarea {
             color: white !important;
-            background: rgba(255,255,255,0.1) !important;
-            border: 1px solid rgba(255,255,255,0.2) !important;
-            -webkit-text-fill-color: white !important;
         }
-        
 
-        /* Force white text for all input elements */
-        input, textarea, [data-testid="stTextInput"] input, [data-testid="stTextInput"] textarea {
-            color: white !important;
-            -webkit-text-fill-color: white !important;
+        .input-footer input[data-testid="stTextInput"]::placeholder {
+            color: rgba(255,255,255,0.6) !important;
+            -webkit-text-fill-color: rgba(255,255,255,0.6) !important;
+        }
+
+        /* Handle light background scenarios */
+        .input-footer input[style*="background: white"],
+        .input-footer input[style*="background: #fff"],
+        .input-footer input[style*="background: rgb(255,255,255)"] {
+            color: black !important;
+            -webkit-text-fill-color: black !important;
+        }
+
+        .input-footer input[style*="background: white"]::placeholder,
+        .input-footer input[style*="background: #fff"]::placeholder,
+        .input-footer input[style*="background: rgb(255,255,255)"]::placeholder {
+            color: rgba(0,0,0,0.6) !important;
+            -webkit-text-fill-color: rgba(0,0,0,0.6) !important;
         }
 
         .input-footer input::placeholder,
@@ -340,6 +350,14 @@ def inject_chat_css():
         .input-footer textarea:focus {
             border-color: #8ac35a !important;
             background: rgba(255,255,255,0.15) !important;
+        }
+
+        /* Light background specific handling */
+        input[style*="background: white"]:focus,
+        input[style*="background: #fff"]:focus,
+        input[style*="background: rgb(255,255,255)"]:focus {
+            border-color: #8ac35a !important;
+            background: rgba(255,255,255,0.95) !important;
         }
 
         /* ── RECOMMENDATION CARD ── */
@@ -510,8 +528,7 @@ class LiteFinancialChatbot:
         
         if 'messages' not in st.session_state:
             st.session_state.messages = []
-            rag_status = "🟢 RAG enabled" if st.session_state.get('rag_ready', False) else "🔴 RAG disabled"
-            self._add_bot_message(f"Hello! I'm **FinWise**, your personal financial advisor. {rag_status} - I can provide detailed financial guidance and match you with funds from real ETF & mutual fund data.")
+            self._add_bot_message("Hello! I'm **FinWise**, your personal financial advisor. I can provide detailed financial guidance and match you with funds from real ETF & mutual fund data.")
             self._add_bot_message("Let's start simple. What is your **annual household income**? *(e.g. 75000)*")
 
         if 'user_data' not in st.session_state:
