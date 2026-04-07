@@ -308,6 +308,39 @@ def inject_chat_css():
             z-index: 999;
         }
 
+        /* White text for input fields - Force with multiple selectors */
+        .input-footer input[type="text"],
+        .input-footer textarea,
+        .input-footer input,
+        .input-footer div[data-baseweb="input"] input,
+        .input-footer div[data-testid="stTextInput"] input,
+        .input-footer div[data-testid="stTextInput"] textarea {
+            color: white !important;
+            background: rgba(255,255,255,0.1) !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
+            -webkit-text-fill-color: white !important;
+        }
+
+        /* Force white text for all input elements */
+        input, textarea, [data-testid="stTextInput"] input, [data-testid="stTextInput"] textarea {
+            color: white !important;
+            -webkit-text-fill-color: white !important;
+        }
+
+        .input-footer input::placeholder,
+        .input-footer textarea::placeholder,
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255,255,255,0.6) !important;
+            -webkit-text-fill-color: rgba(255,255,255,0.6) !important;
+        }
+
+        .input-footer input:focus,
+        .input-footer textarea:focus {
+            border-color: #8ac35a !important;
+            background: rgba(255,255,255,0.15) !important;
+        }
+
         /* ── RECOMMENDATION CARD ── */
         .rec-card {
             background: rgba(138,195,90,0.05);
@@ -694,35 +727,43 @@ class LiteFinancialChatbot:
         income = st.session_state.user_data.get('income', 0)
         recs = []
 
-        if bracket == "High Income Savers":
-            recs = [{'type': 'Tax Planning', 'priority': 'Medium',
+        # HIGH PRIORITY - Always exactly one critical recommendation
+        if savings_rate < 0.1:
+            recs.append({'type': 'Savings Rate', 'priority': 'High',
+                     'action': 'Increase savings rate to at least 10%',
+                     'reason': f'Current rate {savings_rate:.1%} is below healthy threshold',
+                     'details': 'Audit subscriptions, negotiate bills, redirect delta to savings'})
+        elif bracket == "Middle Income Families":
+            recs.append({'type': 'Emergency Fund', 'priority': 'High',
+                     'action': 'Build 3–6 month reserve',
+                     'reason': 'Essential financial buffer for families',
+                     'details': 'High-yield savings account for liquid access'})
+        elif bracket == "High Income Savers":
+            recs.append({'type': 'Tax Planning', 'priority': 'High',
                      'action': 'Optimize tax-advantaged accounts',
                      'reason': 'High bracket benefits from strategic deferral',
-                     'details': 'Max 401(k), backdoor Roth, HSA contributions'}]
-        elif bracket == "Middle Income Families":
-            recs = [
-                {'type': 'Emergency Fund', 'priority': 'High',
-                 'action': 'Build 3–6 month reserve',
-                 'reason': 'Essential financial buffer for families',
-                 'details': 'High-yield savings account for liquid access'},
-                {'type': 'Retirement', 'priority': 'High',
-                 'action': 'Start or increase retirement contributions',
-                 'reason': 'Compound growth requires time',
-                 'details': '401(k) match first, then IRA or Roth IRA'},
-            ]
+                     'details': 'Max 401(k), backdoor Roth, HSA contributions'})
         else:
-            recs = [
-                {'type': 'Banking Foundation', 'priority': 'High',
-                 'action': 'Open a no-fee checking + savings account',
-                 'reason': 'Financial foundation before investing',
-                 'details': 'Look for FDIC-insured accounts with no minimums'},
-                {'type': 'Assistance Programs', 'priority': 'High',
-                 'action': 'Apply for government support programs',
-                 'reason': 'Income stabilization comes first',
-                 'details': 'SNAP, LIHEAP, local community resources'},
-            ]
+            recs.append({'type': 'Banking Foundation', 'priority': 'High',
+                     'action': 'Open a no-fee checking + savings account',
+                     'reason': 'Financial foundation before investing',
+                     'details': 'Look for FDIC-insured accounts with no minimums'})
 
+        # MEDIUM PRIORITY - Always exactly one strategic recommendation
         if income > 25000:
+            recs.append({'type': 'Retirement Planning', 'priority': 'Medium',
+                     'action': 'Start or increase retirement contributions',
+                     'reason': 'Compound growth requires time',
+                     'details': '401(k) match first, then IRA or Roth IRA'})
+        else:
+            recs.append({'type': 'Income Growth', 'priority': 'Medium',
+                     'action': 'Focus on increasing income potential',
+                     'reason': 'Higher income provides more savings capacity',
+                     'details': 'Skill development, side hustles, career advancement'})
+
+        # LOW PRIORITY - Always exactly one optimization recommendation
+        if income > 25000:
+            # Add investment recommendation if available
             user_profile = {'total_income': income,
                             'consensus_cluster_name': bracket,
                             'savings_rate': savings_rate}
@@ -730,21 +771,22 @@ class LiteFinancialChatbot:
             if real_recs:
                 rec = real_recs[0]
                 recs.append({
-                    'type': rec.get('Category', 'Investment'),
-                    'priority': 'High',
+                    'type': 'Investment',
+                    'priority': 'Low',
                     'action': f"Consider {rec.get('Name', 'Selected Fund')}",
                     'reason': rec.get('Category', 'Matched to your risk profile'),
                     'details': f"{rec.get('Category', 'Investment')} — Personalized based on your profile"
                 })
-
-        if savings_rate < 0.1 and income > 0:
-            recs.insert(0, {
-                'type': 'Savings Rate',
-                'priority': 'High',
-                'action': 'Increase savings rate to at least 10%',
-                'reason': f'Current rate {savings_rate:.1%} is below healthy threshold',
-                'details': 'Audit subscriptions, negotiate bills, redirect the delta to savings'
-            })
+            else:
+                recs.append({'type': 'Investment Strategy', 'priority': 'Low',
+                         'action': 'Diversify with low-cost index funds',
+                         'reason': 'Long-term growth with minimal fees',
+                         'details': 'Consider total market index funds for broad exposure'})
+        else:
+            recs.append({'type': 'Financial Education', 'priority': 'Low',
+                     'action': 'Build financial literacy',
+                     'reason': 'Knowledge is foundation of wealth building',
+                     'details': 'Read personal finance books, follow reputable blogs, take free courses'})
 
         return recs
 

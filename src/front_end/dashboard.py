@@ -1189,43 +1189,76 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
-    recommendations = get_savings_recommendations(income, expenses)
+    # Use same recommendation system as chatbot
+    from streamlit_chatbot import LiteFinancialChatbot
+    chatbot = LiteFinancialChatbot()
     
-    for i, rec in enumerate(recommendations):
+    # Get user data from session state or use defaults
+    user_data = {
+        'income': income,
+        'expenses': expenses,
+        'family_size': st.session_state.get('family_size', 1),
+        'savings_rate': max(income - expenses, 0) / income if income > 0 else 0,
+        'income_bracket': st.session_state.get('income_bracket', 'Middle Income Families')
+    }
+    
+    # Temporarily set session state for chatbot function
+    original_user_data = st.session_state.get('user_data', {})
+    st.session_state.user_data = user_data
+    
+    # Get recommendations using same logic as chatbot
+    recommendations = chatbot._generate_simple_recommendations()
+    
+    # Restore original session state
+    if original_user_data:
+        st.session_state.user_data = original_user_data
+    else:
+        st.session_state.pop('user_data', None)
+    
+    # Display recommendations in chatbot format
+    for rec in recommendations:
+        priority_indicator = {'High': '🔴', 'Medium': '🟡', 'Low': '🟢'}.get(rec['priority'], '🔵')
         priority_color = {'High': '#c05a5a', 'Medium': '#d4b84a', 'Low': '#8ac35a'}.get(rec['priority'], '#8ac35a')
         
         st.markdown(f"""
         <div class="chart-card" style="border-left: 4px solid {priority_color};">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
                 <div>
-                    <div class="chart-title" style="margin-bottom: 0.3rem;">{rec['category']}</div>
+                    <div class="chart-title" style="margin-bottom: 0.3rem;">{priority_indicator} {rec['type']}</div>
                     <div class="chart-desc" style="margin-bottom: 0;">
                         Priority: <span style="color: {priority_color}; font-weight: 500;">{rec['priority']}</span>
                     </div>
                 </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 0.85rem; color: rgba(240,237,230,0.5);">Current → Target</div>
-                    <div style="font-family: 'Playfair Display', serif; font-size: 1.1rem; color: #f0ede6; margin-bottom: 0.2rem;">
-                        {rec['current']} → {rec['target']}
-                    </div>
-                    <div style="font-size: 0.9rem; color: #8ac35a;">
-                        {rec['monthly_impact']}/mo
-                    </div>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <div style="font-size: 0.9rem; color: rgba(240,237,230,0.8); margin-bottom: 0.5rem;">
+                    <strong>What to do:</strong> {rec['action']}
+                </div>
+                <div style="font-size: 0.9rem; color: rgba(240,237,230,0.7); margin-bottom: 0.5rem;">
+                    <strong>Why:</strong> {rec['reason']}
+                </div>
+                <div style="font-size: 0.9rem; color: rgba(240,237,230,0.6);">
+                    <strong>Detail:</strong> {rec['details']}
                 </div>
             </div>
-        """, unsafe_allow_html=True)
-        
-        for action in rec['actions']:
-            st.markdown(f"""
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 0.3rem; margin-left: 1rem;">
-                <span style="color: #8ac35a; font-size: 0.8rem;">•</span>
-                <span style="font-size: 0.85rem; color: rgba(240,237,230,0.6);">{action}</span>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        st.markdown("""
         </div>
         """, unsafe_allow_html=True)
+    
+    # Summary
+    st.markdown(f"""
+    <div style="background: rgba(138,195,90,0.08); border-left: 4px solid #8ac35a; padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 8px;">
+        <div style="font-family: 'Playfair Display', serif; font-size: 1.1rem; color: #8ac35a; margin-bottom: 0.5rem;">
+            Summary
+        </div>
+        <div style="color: rgba(240,237,230,0.8); line-height: 1.6;">
+            {len(recommendations)} recommendations · 
+            {len([r for r in recommendations if r['priority']=='High'])} high-priority ·
+            {len([r for r in recommendations if r['priority']=='Medium'])} medium-priority ·
+            {len([r for r in recommendations if r['priority']=='Low'])} low-priority<br>
+            Savings status: {'Needs improvement' if user_data['savings_rate'] < 0.1 else 'On track'}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # ── INTERACTIVE SAVINGS GOAL TRACKER ──
     st.markdown("""

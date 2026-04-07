@@ -8,13 +8,7 @@ os.environ['ANONYMIZED_TELEMETRY'] = 'False'
 os.environ['CHROMA_TELEMETRY'] = 'False'
 os.environ['POSTHOG_DISABLE'] = 'True'
 
-# Configure page settings
-st.set_page_config(
-    page_title="FinWise — Financial Recommendation System",
-    page_icon="🌿",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+# Note: set_page_config is now handled in main app.py to avoid duplicates
 
 def check_chromadb():
     """Check if ChromaDB is available"""
