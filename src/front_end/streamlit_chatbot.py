@@ -320,6 +320,7 @@ def inject_chat_css():
             border: 1px solid rgba(255,255,255,0.2) !important;
             -webkit-text-fill-color: white !important;
         }
+        
 
         /* Force white text for all input elements */
         input, textarea, [data-testid="stTextInput"] input, [data-testid="stTextInput"] textarea {
