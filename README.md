@@ -1,159 +1,143 @@
-# Personalized Financial Recommendation System
+# 💰 Personalized Financial Recommendation System
+
+An AI-powered system that analyzes customer demographics, income, and spending patterns to deliver personalized financial product recommendations — from customer segmentation to actionable insights.
+
+🔗 **Live Demo:** [streamlit app](https://vmwg7knebklvbjmrwbggns.streamlit.app/)
 
 ---
 
-## Project Overview
+## Table of Contents
 
-AI-powered financial recommendation system that analyzes customer demographics, income, and spending patterns to provide personalized financial product recommendations. Complete pipeline from CE survey data to actionable insights.
-
-Deployed on : https://vmwg7knebklvbjmrwbggns.streamlit.app/
----
-
-## Key Achievements
-
-### Customer Segmentation
-- K-means clustering identified 3 distinct customer segments
-- Silhouette score: 0.184 (good cluster separation)
-- 13,886 households analyzed from CE interview data
-
-### Product Recommendation System
-- XGBoost ensemble models with 99.9-100% accuracy
-- 6 financial products predicted per household
-- Personalized scoring for savings, investment, insurance, and loan products
+- [About](#about)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Key Results](#key-results)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Pipeline Details](#pipeline-details)
+  - [Feature Engineering](#feature-engineering)
+  - [Customer Segmentation](#customer-segmentation)
+  - [Product Recommendation Models](#product-recommendation-models)
+  - [RAG Chatbot](#rag-chatbot)
+- [Team](#team)
 
 ---
 
-## Feature Engineering
+## About
 
-### Data Processing Pipeline
-1. Raw Data: CE interview survey (FMLI, MEMI files) - 13,886 households
-2. Missing Value Handling: Domain-specific imputation strategies
-3. Feature Creation: 75 engineered financial and demographic features
+This project builds an end-to-end ML pipeline using **Consumer Expenditure (CE) Survey** data (13,886 households) to:
 
-### Engineered Feature Categories
-
-#### Demographic Features (15 features)
-- age_ref, age_group, family_size, marital_status
-- education_level, race, region, housing_tenure
-- is_homeowner, is_married, family_composition
-
-#### Income Features (20 features)
-- total_income, log_income, income_rank, income_quintile
-- wage_income_ratio, retirement_income_ratio, per_capita_income
-- zero_income_flag, high_income (top 25%)
-
-#### Expenditure Features (25 features)
-- total_expenditure, log_expenditure, expenditure_rank
-- Category spending: food_expenditure, housing_expenditure, transportation_expenditure
-- Spending ratios: food_ratio, housing_ratio, discretionary_ratio
-- essential_spending_ratio, discretionary_spending_ratio
-
-#### Financial Health Features (15 features)
-- savings_amount, savings_rate (clipped to [-2, 1])
-- expenditure_to_income_ratio (inf values handled)
-- is_positive_savings, high_spender (top 25%)
-- spending_diversity, financial_health_tier
-
-### Critical Data Fixes for Clustering
-- Infinite Values: Replaced inf in ratios with median values
-- Zero Income: Created zero_income_flag for 927 households
-- Savings Rate: Clipped extreme values to [-2, 1] range
-- Missing Values: 100% imputation success rate
+1. **Segment customers** into distinct financial profiles via K-Means clustering
+2. **Predict product needs** (savings, investment, insurance, loans) using an XGBoost ensemble
+3. **Match users to funds** (ETFs & mutual funds) through content-based cosine similarity
+4. **Determine account eligibility** (IRA, 401k, HSA) with a rule-based engine
+5. **Answer financial questions** via a RAG chatbot powered by ChromaDB + LangChain + Google Gemini 2.5 Flash
 
 ---
 
-## Machine Learning Models
+## Tech Stack
 
-### 1. K-means Clustering
-- Purpose: Customer segmentation for personalized recommendations
-- Algorithm: K-means with StandardScaler preprocessing
-- Optimal K: 3 clusters (determined by silhouette analysis)
-- Performance: Silhouette score = 0.184 (good separation)
-
-#### Results
-| Cluster | Households | % of Total | Avg Income | Savings Rate | Profile |
-|---------|------------|------------|------------|--------------|---------|
-| 0 | 4,530 | 32.6% | $199,221 | 86.4% | High Income Savers |
-| 1 | 1,696 | 12.2% | $3,260 | -49.9% | Zero Income Households |
-| 2 | 7,660 | 55.2% | $49,963 | 79.7% | Middle Income Families |
-
-### 2. XGBoost Ensemble Models
-- Purpose: Product need prediction for 6 financial products
-- Architecture: 3-model ensemble (XGBoost + Random Forest + Logistic Regression)
-- Validation: 5-fold cross-validation with stratified sampling
-
-#### Target Variables
-| Product | Positive Rate | Business Logic |
-|---------|---------------|----------------|
-| needs_savings_product | 5.6% | Low savings rate + positive income |
-| needs_investment_product | 30.6% | High income + good savings rate |
-| needs_insurance_product | 1.7% | High healthcare spending ratio |
-| needs_loan_product | 2.7% | High spending ratio + working age |
-| high_spender | 25.0% | Top 25% expenditure |
-| high_income | 24.8% | Top 25% income |
-
-#### Model Performance Results
-| Target Variable | XGBoost Accuracy | Random Forest | Ensemble Accuracy | AUC Score |
-|-----------------|------------------|---------------|-------------------|-----------|
-| needs_savings_product | 100% | 100% | 100% | 1.000 |
-| needs_investment_product | 99.9% | 99.9% | 99.9% | 1.000 |
-| needs_insurance_product | 100% | 100% | 100% | 1.000 |
-| needs_loan_product | 100% | 100% | 100% | 1.000 |
-| high_spender | 100% | 100% | 100% | 1.000 |
-| high_income | 100% | 100% | 100% | 1.000 |
-
-### 3. Feature Selection Model
-- Purpose: Reduce dimensionality and improve model efficiency
-- Method: Random Forest importance + correlation analysis
-- Result: Reduced from 75 to 60 features (20% reduction)
-- Performance Impact: 40% faster training, maintained accuracy
+| Layer | Tools |
+|---|---|
+| **ML & Data** | Python, Scikit-learn, XGBoost, Pandas, NumPy |
+| **Clustering** | K-Means, StandardScaler, Silhouette Analysis |
+| **NLP / RAG** | LangChain, ChromaDB, Sentence-Transformers, Google Gemini 2.5 Flash |
+| **Frontend** | Streamlit |
+| **Deployment** | Streamlit Community Cloud |
 
 ---
 
-## Model Insights
+## Architecture
 
-### Top Feature Importance (Investment Products)
-1. income_rank (75.3% importance) - Primary driver
-2. total_income (14.9%) - Absolute income matters
-3. log_income (4.7%) - Income distribution
-4. family_size (0.5%) - Household composition
-5. savings_amount (0.3%) - Current savings behavior
-
-### Business Rules Applied
-- Zero Income Households: Flagged for assistance programs
-- High Income + Good Savings: Investment product candidates
-- High Healthcare Spending: Insurance product recommendations
-- Young Working Age: Loan product targeting
-
----
-
-### Model Validation
-- Cross-Validation: 5-fold stratified sampling
-- Metrics: Accuracy, Precision, Recall, F1, AUC-ROC
-- Robustness: Handles missing values and outliers
-- Scalability: Ready for production deployment
-
----
-
-## Usage Instructions
-
-### Run Complete Pipeline
-```bash
-cd EDA/
-python feature_engineering_fixed.py      # Generate features
-python kmeans_clustering.py            # Customer segmentation
-python xgboost_ensemble_modeling.py    # Product recommendations
+```
+CE Survey Data (FMLI, MEMI)
+        │
+        ▼
+┌──────────────────────┐
+│  Feature Engineering  │  75 engineered features
+│  (imputation, ratios, │  across demographics,
+│   flags, clipping)    │  income, expenditure,
+└──────────┬───────────┘  and financial health
+           │
+     ┌─────┴──────┐
+     ▼            ▼
+┌─────────┐  ┌──────────────────┐
+│ K-Means │  │ XGBoost Ensemble │
+│ (3 seg) │  │ (6 product needs)│
+└────┬────┘  └───────┬──────────┘
+     │               │
+     ▼               ▼
+┌─────────────────────────────┐
+│     Recommendation Layer     │
+│  • Fund matching (cosine)    │
+│  • Account eligibility rules │
+│  • RAG chatbot (ChromaDB +   │
+│    Gemini 2.5 Flash)         │
+└──────────────┬───────────────┘
+               ▼
+        Streamlit App
 ```
 
-### View Results
-```bash
-# Clustering results
-open clustering-results/kmeans_visualizations.png
-open clustering-results/optimal_k_analysis.png
+---
 
-# Model performance
-open clustering-results/xgboost-ensemble/model_performance_comparison.png
-open clustering-results/xgboost-ensemble/README.md
+## Key Results
+
+### Customer Segmentation (K-Means, k=3)
+
+| Cluster | Households | Avg Income | Savings Rate | Profile |
+|---------|-----------|-----------|-------------|---------|
+| 0 | 4,530 (32.6%) | $199,221 | 86.4% | High-Income Savers |
+| 1 | 1,696 (12.2%) | $3,260 | −49.9% | Zero-Income Households |
+| 2 | 7,660 (55.2%) | $49,963 | 79.7% | Middle-Income Families |
+
+Silhouette score: **0.184**
+
+### Product Need Prediction (XGBoost + RF + Logistic Regression Ensemble)
+
+| Target | Positive Rate | Ensemble Accuracy | AUC |
+|--------|--------------|-------------------|-----|
+| Savings product | 5.6% | 100% | 1.000 |
+| Investment product | 30.6% | 99.9% | 1.000 |
+| Insurance product | 1.7% | 100% | 1.000 |
+| Loan product | 2.7% | 100% | 1.000 |
+| High spender | 25.0% | 100% | 1.000 |
+| High income | 24.8% | 100% | 1.000 |
+
+Validated with 5-fold stratified cross-validation.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.10+
+- pip
+
+### Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/<your-username>/<repo-name>.git
+cd <repo-name>
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Run the Full Pipeline
+
+```bash
+cd EDA/
+python feature_engineering_fixed.py      # Generate 75 engineered features
+python kmeans_clustering.py              # Customer segmentation
+python xgboost_ensemble_modeling.py      # Product need predictions
+```
+
+### Launch the App
+
+```bash
+streamlit run src/front_end/app.py
 ```
 
 ---
@@ -162,122 +146,63 @@ open clustering-results/xgboost-ensemble/README.md
 
 ```
 src/
-├── ml/                           # Machine Learning Components
-│   ├── __init__.py
-│   ├── cluster_mapping.py
-│   ├── etf_mf_integration.py
+├── ml/                              # ML pipeline
 │   ├── feature_engineering.py
 │   ├── feature_selection.py
 │   ├── kmeans_clustering.py
+│   ├── xgboost_ensemble_modeling.py
+│   ├── new_user_classifier.py
+│   ├── cluster_mapping.py
+│   ├── etf_mf_integration.py
 │   ├── missing_values.py
 │   ├── multi_k_clustering.py
-│   ├── new_user_classifier.py
-│   ├── skew_transform.py
-│   ├── xgboost_ensemble_modeling.py
-│   └── README.md
-├── Rules-RAG/                     # Rules-Based RAG Components
-│   ├── __init__.py
+│   └── skew_transform.py
+├── Rules-RAG/                       # RAG + rule engine
 │   ├── fund_matching_rag.py
 │   ├── ml_pipeline.py
 │   ├── rag_pipeline.py
 │   └── rule_engine.py
-├── front_end/                     # Streamlit Applications
-│   ├── __init__.py
+├── front_end/                       # Streamlit UI
 │   ├── app.py
 │   ├── dashboard.py
 │   ├── landing_page.py
-│   ├── streamlit_chatbot.py
-│   └── README.md
-├── rag_system.py                 # Main RAG System
-└── [other files]
-```
-
----
-
-## RAG Integration
-
-### Overview
-Successfully integrated Retrieval-Augmented Generation (RAG) capabilities into the Financial Recommendation System. The chatbot now provides detailed, knowledge-based financial advice beyond simple rule-based responses.
-
-### Key Features
-
-#### Intelligent Query Processing
-- Detects 20+ financial keywords (invest, retirement, emergency, budget, debt, tax, etc.)
-- Retrieves top 3 most relevant documents using semantic similarity
-- Generates contextual responses based on user's financial profile
-
-#### Personalized Context
-- User profile includes: income, expenses, savings rate, family size, income bracket
-- Responses are tailored to user's specific financial situation
-- Maintains consistency with existing cluster-based recommendations
-
-### Knowledge Base Structure
-
-** Categories (13 total):**
-- **emergency_fund**: Basics and importance
-- **retirement**: Fundamentals and FIRE movement
-- **budgeting**: Strategies and methods
-- **investing**: Basics and ETF/mutual funds
-- **debt**: Management and strategies
-- **taxes**: Planning and optimization
-- **insurance**: Fundamentals and types
-- **real_estate**: Home buying guide
-- **education**: College savings strategies
-- **etf**: Basics and advantages
-- **mutual_funds**: Basics and comparison
-- **comparison**: ETF vs mutual funds
-
-### Technical Implementation
-
-#### Dependencies
-- `chromadb==0.5.5` - Vector database for semantic search
-- `sentence-transformers==3.1.0` - Text embeddings
-- `google-generativeai` - AI response generation (optional)
-
-#### File Structure
-```
-src/
-├── rag_system.py              # Core RAG implementation
-├── streamlit/streamlit_chatbot.py  # Enhanced with RAG integration
-└── Rules-RAG/              # Rules-based RAG components
-    ├── rag_pipeline.py
-    ├── fund_matching_rag.py
-    └── rule_engine.py
-
+│   └── streamlit_chatbot.py
+├── rag_system.py                    # Core RAG implementation
 data/
-├── rag_knowledge_base/        # Knowledge documents storage
-└── vector_store/             # ChromaDB persistent storage
+├── rag_knowledge_base/              # Financial knowledge docs
+└── vector_store/                    # ChromaDB persistent storage
 ```
-
-### Usage Examples
-
-#### Enhanced Query Handling
-```python
-# Example queries that trigger RAG:
-"Suggest some retirement plans?"
-"What's the difference between ETFs and mutual funds?"
-"How do I create an emergency fund?"
-```
-
-#### Response Enhancement
-- **Before**: Simple rule-based responses for basic topics
-- **After**: Detailed, comprehensive financial guidance with structured knowledge
-- **Coverage**: 13 financial topics vs. 4 basic topics previously
 
 ---
 
-## Technical Notes
+## Pipeline Details
 
-- Dataset: Consumer Expenditure Survey Interview Data (13,886 households)
-- Features: 75 engineered financial and demographic variables
-- Models: K-means clustering + XGBoost ensemble
-- Performance: 80-95% prediction accuracy
-- Scalability: Ready for production deployment
+### Feature Engineering
+
+75 features across four categories, engineered from raw CE Survey data:
+
+- **Demographic (15):** age, family size, marital status, education, region, housing tenure, etc.
+- **Income (20):** total/log income, income rank & quintile, wage ratio, per-capita income, zero-income flag
+- **Expenditure (25):** total/log spending, category breakdowns (food, housing, transport), spending ratios, diversity index
+- **Financial Health (15):** savings amount & rate, expenditure-to-income ratio, financial health tier
+
+Key preprocessing steps: infinite values replaced with medians, savings rate clipped to [−2, 1], zero-income flagging for 927 households, 100% missing-value imputation.
+
+### Customer Segmentation
+
+K-Means clustering with StandardScaler preprocessing. Optimal k=3 determined via silhouette analysis. Segments drive downstream recommendation logic — e.g., zero-income households are flagged for assistance programs rather than investment products.
+
+### Product Recommendation Models
+
+A 3-model ensemble (XGBoost + Random Forest + Logistic Regression) predicts need for 6 financial products per household. Business rules define the target labels (e.g., "needs insurance" = high healthcare spending ratio). Feature selection reduced input from 75 → 60 features with a 40% training speedup and no accuracy loss. Top driver for investment recommendations: `income_rank` at 75.3% importance.
+
+### RAG Chatbot
+
+The chatbot uses ChromaDB for vector storage, Sentence-Transformers for embeddings, and Google Gemini 2.5 Flash for response generation. It detects 20+ financial keywords, retrieves the top 3 relevant documents, and generates responses personalized to the user's financial profile. Knowledge base spans 13 categories: emergency funds, retirement, budgeting, investing, debt, taxes, insurance, real estate, education, ETFs, mutual funds, and ETF-vs-MF comparisons.
 
 ---
 
 ## Team
 
-*Suchita Sharma** 
-*Yogita Bisht** 
----
+- **Suchita Sharma**
+- **Yogita Bisht**
