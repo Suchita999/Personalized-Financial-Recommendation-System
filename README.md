@@ -1,4 +1,4 @@
-# FinWise — Personalized Financial Recommendation System
+# FinWise - Personalized Financial Recommendation System
 
 An AI-powered system that profiles users based on demographics and spending patterns, matches personalized fund recommendations from 26,000+ real mutual funds and ETFs, and generates natural-language explanations via a RAG pipeline — all with zero data persistence for privacy by design.
 
@@ -269,6 +269,5 @@ Testing conducted using `unittest` and `pytest` across three levels: unit tests 
 
 ## Team
 
-- **Suchita Sharma** 
+- **Suchita Sharma**
 - **Yogita Bisht** 
-
