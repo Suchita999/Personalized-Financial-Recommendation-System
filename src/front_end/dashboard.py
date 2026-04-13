@@ -1174,8 +1174,8 @@ def main():
     with right:
         st.markdown("""
         <div class="chart-card">
-            <div class="chart-title">Wealth Building Impact</div>
-            <div class="chart-desc">How your contributions and investment growth compare over time.</div>
+            <div class="chart-title">Conservative vs. Aggressive Growth Path</div>
+            <div class="chart-desc">Lower-risk profiles prioritize capital preservation over aggressive growth.</div>
         """, unsafe_allow_html=True)
         fig_impact = chart_savings_impact_breakdown(income, expenses, years=horizon)
         st.plotly_chart(fig_impact, use_container_width=True, config={'displayModeBar': False})

@@ -153,7 +153,7 @@ def inject_chat_css():
             align-items: flex-start;
             margin-bottom: 0.8rem;
             font-size: 0.85rem;
-            color: rgba(240,237,230,0.6);
+            color: white;
             line-height: 1.55;
         }
 
@@ -214,9 +214,9 @@ def inject_chat_css():
             font-size: 0.85rem;
         }
 
-        .step-label.done { color: rgba(240,237,230,0.7); }
-        .step-label.active { color: #f0ede6; font-weight: 500; }
-        .step-label.pending { color: rgba(240,237,230,0.25); }
+        .step-label.done { color: white; }
+        .step-label.active { color: white; font-weight: 500; }
+        .step-label.pending { color: rgba(255,255,255,0.4); }
 
         /* ── CHAT AREA ── */
         .chat-area {
@@ -277,14 +277,14 @@ def inject_chat_css():
         .bubble.bot {
             background: rgba(138,195,90,0.08);
             border: 1px solid rgba(138,195,90,0.15);
-            color: rgba(240,237,230,0.85);
+            color: white;
             border-bottom-left-radius: 4px;
         }
 
         .bubble.user {
             background: rgba(100,160,220,0.12);
             border: 1px solid rgba(100,160,220,0.2);
-            color: rgba(240,237,230,0.85);
+            color: white;
             border-bottom-right-radius: 4px;
         }
 
@@ -378,7 +378,7 @@ def inject_chat_css():
 
         .rec-body {
             font-size: 0.85rem;
-            color: rgba(240,237,230,0.6);
+            color: white;
         }
 
         /* ── STREAMLIT BUTTON overrides ── */
@@ -1031,9 +1031,9 @@ class LiteFinancialChatbot:
                 FinWise
             </div>
             <div class="topbar-nav">
-                <a href="?page=landing" class="topbar-nav-link" target="_blank">Home</a>
+                <a href="?page=landing" class="topbar-nav-link">Home</a>
                 <a href="?page=chatbot" class="topbar-nav-link active">Advisor</a>
-                <a href="?page=dashboard" class="topbar-nav-link" target="_blank">Dashboard</a>
+                <a href="?page=dashboard" class="topbar-nav-link">Dashboard</a>
             </div>
             <div class="topbar-sub">Financial Recommendation System</div>
         </div>
